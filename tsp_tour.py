@@ -35,7 +35,7 @@ def readCities(inputFile):
     f.close()
     return cities
 
-def NearestNeighbor(unvisited):
+def nearestNeighbor(unvisited):
     visited = collections.OrderedDict()
     current = unvisited.get(0)
     first = unvisited.get(0)
@@ -54,7 +54,6 @@ def NearestNeighbor(unvisited):
         # the new current node is now the node that was previously the nearest node
         current = nearest[1]
 
-    print(current['id'])
     visited[current['id']] = current
     tourLen += distance(current, first)
     unvisited.pop(current['id'])
@@ -79,6 +78,81 @@ def findClosest( current, unvisited ):
             closestVertex = v
     return (closestDist, closestVertex)
 
+# Optimize the calculated tour
+# tour - dictionary with the tour in order
+#
+
+def optimize( tour, tourWeight, timeLimit):
+    oldWeight = tourWeight
+    newWeight = 0
+    found = False
+
+    curTime = time.time()
+    endTime = curTime + timeLimit
+
+    while(time.time() < endTime):
+        # find two edges that do not share a vertex
+        # choose a random index u <= len(tour)
+        u = random.randrange(0, len(tour))
+        if u + 1 > len(tour):
+            v = tour[0]
+        else:
+            v = u + 1
+
+        edgeA = {'u': u,'v': v}
+
+        j = random.randrange(0, len(tour) - 1)
+
+        # find another pair of adjacent indices in tour with distinct vertices
+        while(found == False):
+            if (j+1 >= len(tour)):
+                if (j == edgeA['u'] or j == edgeA['v'] or 0 == edgeA['u'] or 0 == edgeA['v']):
+                    j = random.randrange(0, len(tour) - 1)
+                else:
+                    found = True
+            else:
+                if (j == edgeA['u'] or j == edgeA['v'] or j+1 == edgeA['u'] or j+1 == edgeA['v']):
+                    j = random.randrange(0, len(tour) - 1)
+                else:
+                    found = True
+
+            if (j+1 >= len(tour)):
+                k = tour[0]
+            else:
+                k = j+1
+
+            edgeB = {'j': j, 'k': k}
+
+            # get the distance of each edge and subtract from the total
+            distA = distance(tour[edgeA['u']], tour[edgeA['v']])
+            distB = distance(tour[edgeB['j']], tour[edgeB['k']])
+            newWeight = oldWeight - (distA + distB)
+
+            # swapping the values of the indices rearrances the order of the tour
+            # this effectively creates new edges between the adjacent indices
+            temp = tour[v]
+            tour[k] = tour[v]
+            tour[v] = temp
+
+            # get the distance of our new edges
+
+            newDistA = distance(tour[edgeA['u']], tour[edgeA['v']])
+            newDistB = distance(tour[edgeB['j']], tour[edgeB['k']])
+
+            # add these distances to our newWeight
+            newWeight = newWeight + newDistA + newDistB
+
+            # if the tour is longer, revert the swap
+            if (newWeight > oldWeight):
+                temp = tour[v]
+                tour[k] = tour[v]
+                tour[v] = temp
+            else:
+                oldWeight = newWeight
+
+    return (tour, newWeight)
+
+
 def main():
 
     # The first commandline option is the input file
@@ -88,11 +162,21 @@ def main():
     # A dictionary of cities and their coordinates
     cities = readCities(inputFile)
 
-    # TODO: Calculate Tour
-    nearestNeighbors = NearestNeighbor(cities)
+    # Calculate Tour
+    nearestNeighbors = nearestNeighbor(cities)
 
+    print("=== nearestNeighbors ===")
     print(nearestNeighbors[0])
-    writeResults(outputFile, nearestNeighbors[0], nearestNeighbors[1])
+    print(nearestNeighbors[1])
+
+    # Optimize Tour
+    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 179)
+
+    print("=== optimized ===")
+    print(optimizedTour[0])
+    print(optimizedTour[1])
+
+    writeResults(outputFile, optimizedTour[0], optimizedTour[1])
 
 
 def writeResults(outputFile, cities, totalDistance):
@@ -102,11 +186,15 @@ def writeResults(outputFile, cities, totalDistance):
 
     # TODO: Calculate total tour distance
     print(totalDistance, file=outFile)
+    print(totalDistance)
 
     # Print the City IDs of the tour
     for city in cities:
         #print("{0} {1} {2}".format(city, cities[city]["x"], cities[city]["y"]))
         print(city, file=outFile)
+        print(city)
+
+
 
 if __name__ == "__main__":
     main()
