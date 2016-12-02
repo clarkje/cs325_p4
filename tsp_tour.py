@@ -2,6 +2,7 @@
 # CS325 - Project 4
 # Traveling Salesman Problem Solver
 
+from __future__ import print_function
 import sys
 import re
 import time
@@ -22,10 +23,10 @@ def readCities(inputFile):
 
     f = open(inputFile,'r')
     line = f.readline()
-    cities = []
+    cities = {}
     while len(line) > 1:
         lineparse = re.findall(r'[^,;\s]+', line)
-        cities.append([int(lineparse[1]),int(lineparse[2])])
+        cities[int(lineparse[0])]={'id': int(lineparse[0]), 'x': int(lineparse[1]), 'y': int(lineparse[2])}
         line = f.readline()
     f.close()
     return cities
@@ -38,8 +39,34 @@ def main():
 
     # A dictionary of cities and their coordinates
     cities = readCities(inputFile)
-    print cities
-    print distance(cities[0],cities[12])
+
+    # TODO: Calculate Tour
+
+    # ***** DELETE THIS - ITS A PLACEHOLDER FOR THE CALCULATED TOUR *****
+    tour = cities
+
+    writeResults(outputFile, cities)
+
+
+def writeResults(outputFile, cities):
+
+    # open for writing, clears existing file
+    outFile = open(outputFile, 'w')
+
+    # first line in the file is the total distance of the tour
+    totalDistance = 0;
+
+    # TODO: Calculate total tour distance
+    print(totalDistance, file=outFile)
+    # TODO: Comment out (easier to look at output in console for debugging)
+    print(totalDistance)
+
+    # Print the City IDs of the tour
+    for city in cities:
+        #print("{0} {1} {2}".format(city, cities[city]["x"], cities[city]["y"]))
+        print(city, file=outFile)
+        # TODO: Comment out (easier to look at output in console for debugging)
+        print(city)
 
 if __name__ == "__main__":
     main()
