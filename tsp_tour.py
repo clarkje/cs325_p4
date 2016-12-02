@@ -19,6 +19,8 @@ def distance(a,b):
     # Euclidean distance rounded to the nearest integer:
     dx = a['x'] - b['x']
     dy = a['y'] - b['y']
+
+    print("dx: {0}, dy: {1}".format(dx, dy))
     return int(math.sqrt(dx*dx + dy*dy)+0.5)
 
 
@@ -91,20 +93,27 @@ def optimize( tour, tourWeight, timeLimit):
     endTime = curTime + timeLimit
 
     while(time.time() < endTime):
+
         # find two edges that do not share a vertex
         # choose a random index u <= len(tour)
-        u = random.randrange(0, len(tour))
-        if u + 1 > len(tour):
+        u = random.randrange(0, len(tour) - 1)
+        if u + 1 >= len(tour):
             v = tour[0]
         else:
             v = u + 1
 
         edgeA = {'u': u,'v': v}
-
         j = random.randrange(0, len(tour) - 1)
+
+        print("u: {0}, v: {1}".format(u, v))
+
 
         # find another pair of adjacent indices in tour with distinct vertices
         while(found == False):
+
+            print("j: {0}, edgeA.u: {1}, edgeA.v: {2}".format(j, edgeA['u'], edgeA['v']))
+            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
+
             if (j+1 >= len(tour)):
                 if (j == edgeA['u'] or j == edgeA['v'] or 0 == edgeA['u'] or 0 == edgeA['v']):
                     j = random.randrange(0, len(tour) - 1)
@@ -116,39 +125,56 @@ def optimize( tour, tourWeight, timeLimit):
                 else:
                     found = True
 
+            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
+
+
             if (j+1 >= len(tour)):
                 k = tour[0]
             else:
                 k = j+1
 
-            edgeB = {'j': j, 'k': k}
+            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
 
-            # get the distance of each edge and subtract from the total
-            distA = distance(tour[edgeA['u']], tour[edgeA['v']])
-            distB = distance(tour[edgeB['j']], tour[edgeB['k']])
-            newWeight = oldWeight - (distA + distB)
+        edgeB = {'j': j, 'k': k}
 
-            # swapping the values of the indices rearrances the order of the tour
-            # this effectively creates new edges between the adjacent indices
-            temp = tour[v]
-            tour[k] = tour[v]
-            tour[v] = temp
+        # get the distance of each edge and subtract from the total
+        print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
+        print("c: {0}, d: {1}".format(tour[edgeB['j']], tour[edgeB['k']]))
 
-            # get the distance of our new edges
+        distA = distance(tour[edgeA['u']], tour[edgeA['v']])
+        distB = distance(tour[edgeB['j']], tour[edgeB['k']])
+        newWeight = oldWeight - (distA + distB)
 
-            newDistA = distance(tour[edgeA['u']], tour[edgeA['v']])
-            newDistB = distance(tour[edgeB['j']], tour[edgeB['k']])
+        print("distA: {0}, distb: {1}".format(distA, distB))
 
-            # add these distances to our newWeight
-            newWeight = newWeight + newDistA + newDistB
+        # swapping the values of the indices rearrances the order of the tour
+        # this effectively creates new edges between the adjacent indices
+        temp = tour[edgeA['v']]
+        tour[edgeB['k']] = tour[edgeA['v']]
+        tour[edgeA['v']] = temp
 
-            # if the tour is longer, revert the swap
-            if (newWeight > oldWeight):
-                temp = tour[v]
-                tour[k] = tour[v]
-                tour[v] = temp
-            else:
-                oldWeight = newWeight
+        # get the distance of our new edges
+
+        newDistA = distance(tour[edgeA['u']], tour[edgeA['v']])
+        newDistB = distance(tour[edgeB['j']], tour[edgeB['k']])
+
+        print("newDistA: {0}, newDistB: {1}".format(newDistA, newDistB))
+
+
+        # add these distances to our newWeight
+        newWeight = newWeight + newDistA + newDistB
+
+        print("oldweight: {0}, newweight: {1}".format(oldWeight, newWeight))
+
+        # if the tour is longer, revert the swap
+        if (newWeight > oldWeight):
+            temp = tour[edgeA['v']]
+            tour[edgeB['k']] = tour[edgeA['v']]
+            tour[edgeA['v']] = temp
+        else:
+            oldWeight = newWeight
+
+        found = False
 
     return (tour, newWeight)
 
