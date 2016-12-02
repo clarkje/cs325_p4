@@ -15,12 +15,15 @@ import collections
 # expects a dictionary item with the city id as the first element, and a dictionary of x, y as the second element
 
 def distance(a,b):
+
+    #print("distance: a:{0} b:{1}".format(a,b))
+
     # a and b are integer pairs (each representing a point in a 2D, integer grid)
     # Euclidean distance rounded to the nearest integer:
-    dx = a['x'] - b['x']
-    dy = a['y'] - b['y']
+    dx = abs(a['x'] - b['x'])
+    dy = abs(a['y'] - b['y'])
 
-    print("dx: {0}, dy: {1}".format(dx, dy))
+    #print("dx: {0}, dy: {1}".format(dx, dy))
     return int(math.sqrt(dx*dx + dy*dy)+0.5)
 
 
@@ -85,6 +88,9 @@ def findClosest( current, unvisited ):
 #
 
 def optimize( tour, tourWeight, timeLimit):
+
+    print("==== optimize ====")
+
     oldWeight = tourWeight
     newWeight = 0
     found = False
@@ -93,6 +99,8 @@ def optimize( tour, tourWeight, timeLimit):
     endTime = curTime + timeLimit
 
     while(time.time() < endTime):
+
+        print("Back at top")
 
         # find two edges that do not share a vertex
         # choose a random index u <= len(tour)
@@ -105,14 +113,14 @@ def optimize( tour, tourWeight, timeLimit):
         edgeA = {'u': u,'v': v}
         j = random.randrange(0, len(tour) - 1)
 
-        print("u: {0}, v: {1}".format(u, v))
+        #print("u: {0}, v: {1}".format(u, v))
 
 
         # find another pair of adjacent indices in tour with distinct vertices
         while(found == False):
 
-            print("j: {0}, edgeA.u: {1}, edgeA.v: {2}".format(j, edgeA['u'], edgeA['v']))
-            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
+            #print("j: {0}, edgeA.u: {1}, edgeA.v: {2}".format(j, edgeA['u'], edgeA['v']))
+            #print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
 
             if (j+1 >= len(tour)):
                 if (j == edgeA['u'] or j == edgeA['v'] or 0 == edgeA['u'] or 0 == edgeA['v']):
@@ -125,33 +133,37 @@ def optimize( tour, tourWeight, timeLimit):
                 else:
                     found = True
 
-            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
-
-
             if (j+1 >= len(tour)):
                 k = tour[0]
             else:
                 k = j+1
 
-            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
 
         edgeB = {'j': j, 'k': k}
 
         # get the distance of each edge and subtract from the total
+        distA = distance(tour[edgeA['u']], tour[edgeA['v']])
+        distB = distance(tour[edgeB['j']], tour[edgeB['k']])
+
+        print("before swap")
         print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
         print("c: {0}, d: {1}".format(tour[edgeB['j']], tour[edgeB['k']]))
 
-        distA = distance(tour[edgeA['u']], tour[edgeA['v']])
-        distB = distance(tour[edgeB['j']], tour[edgeB['k']])
+        print("oldWeight: {0}, newWeight{1}".format(oldWeight, newWeight))
+        print("distA: {0}, distb: {1}".format(distA, distB))
+
         newWeight = oldWeight - (distA + distB)
 
-        print("distA: {0}, distb: {1}".format(distA, distB))
 
         # swapping the values of the indices rearrances the order of the tour
         # this effectively creates new edges between the adjacent indices
-        temp = tour[edgeA['v']]
+        temp = tour[edgeB['k']]
         tour[edgeB['k']] = tour[edgeA['v']]
         tour[edgeA['v']] = temp
+
+        print("after swap")
+        print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
+        print("c: {0}, d: {1}".format(tour[edgeB['j']], tour[edgeB['k']]))
 
         # get the distance of our new edges
 
@@ -168,15 +180,19 @@ def optimize( tour, tourWeight, timeLimit):
 
         # if the tour is longer, revert the swap
         if (newWeight > oldWeight):
-            temp = tour[edgeA['v']]
+            print("Swapping back")
+            temp = tour[edgeB['k']]
             tour[edgeB['k']] = tour[edgeA['v']]
             tour[edgeA['v']] = temp
+            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
+            print("c: {0}, d: {1}".format(tour[edgeB['j']], tour[edgeB['k']]))
+
         else:
             oldWeight = newWeight
 
         found = False
 
-    return (tour, newWeight)
+    return (tour, oldWeight)
 
 
 def main():
@@ -196,7 +212,7 @@ def main():
     print(nearestNeighbors[1])
 
     # Optimize Tour
-    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 179)
+    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 1)
 
     print("=== optimized ===")
     print(optimizedTour[0])
