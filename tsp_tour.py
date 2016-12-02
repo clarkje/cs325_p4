@@ -11,24 +11,15 @@ import math
 import random
 import collections
 
-#class Vertex:
-#    def __init__(self, id, x, y):
-#        self.id = id
-#        self.x = x
-#        self.y = y
-
 # adapted from tsp-verifier.py
 # expects a dictionary item with the city id as the first element, and a dictionary of x, y as the second element
+
 def distance(a,b):
     # a and b are integer pairs (each representing a point in a 2D, integer grid)
     # Euclidean distance rounded to the nearest integer:
     dx = a['x'] - b['x']
     dy = a['y'] - b['y']
-    return int(math.sqrt(dx*dx + dy*dy)+0.5) # equivalent to the next line
-    #return int(round(math.sqrt(dx*dx + dy*dy)))
-
-    # ????? What is the following line:
-   # return 1
+    return int(math.sqrt(dx*dx + dy*dy)+0.5)
 
 
 # borrowed from tsp-verifier.py
@@ -39,7 +30,6 @@ def readCities(inputFile):
     cities = {}
     while len(line) > 1:
         lineparse = re.findall(r'[^,;\s]+', line)
-        #cities[int(lineparse[0])] = Vertex(int(lineparse[0]), int(lineparse[1]), int(lineparse[2]))
         cities[int(lineparse[0])]={'x': int(lineparse[1]), 'y': int(lineparse[2]), 'id': int(lineparse[0])}
         line = f.readline()
     f.close()
@@ -77,25 +67,16 @@ def findClosest( current, unvisited ):
     # the index of the closest node
     closestVertex = {}
 
-    #print("Finding Closest For")
-    #print(current)
-
     for vertex in unvisited:
 
         #HACK: This is odd... instead of getting the vertex and tuple as vertex, I just get its index
         #I'm effectively just constructing the object I expected with get() from the parent dict...
         v = unvisited.get(vertex)
 
-        print(v)
         dist = distance(current, v)
-        print(dist)
         if dist < closestDist:
             closestDist = dist
             closestVertex = v
-    #print("Result:")
-    #print(closestVertex)
-    #print(closestDist)
-    #print("===========================")
     return (closestDist, closestVertex)
 
 def main():
@@ -106,9 +87,6 @@ def main():
 
     # A dictionary of cities and their coordinates
     cities = readCities(inputFile)
-
-    print("==== cities ====")
-    print(cities)
 
     # TODO: Calculate Tour
     nearestNeighbors = NearestNeighbor(cities)
@@ -124,15 +102,11 @@ def writeResults(outputFile, cities, totalDistance):
 
     # TODO: Calculate total tour distance
     print(totalDistance, file=outFile)
-    # TODO: Comment out (easier to look at output in console for debugging)
-    print(totalDistance)
 
     # Print the City IDs of the tour
     for city in cities:
         #print("{0} {1} {2}".format(city, cities[city]["x"], cities[city]["y"]))
         print(city, file=outFile)
-        # TODO: Comment out (easier to look at output in console for debugging)
-        print(city)
 
 if __name__ == "__main__":
     main()
