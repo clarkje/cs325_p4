@@ -27,7 +27,9 @@ def distance(a,b):
     return int(math.sqrt(dx*dx + dy*dy)+0.5) # equivalent to the next line
     #return int(round(math.sqrt(dx*dx + dy*dy)))
 
-    return 1
+    # ????? What is the following line:
+   # return 1
+
 
 # borrowed from tsp-verifier.py
 def readCities(inputFile):
@@ -49,7 +51,7 @@ def NearestNeighbor(unvisited):
     first = unvisited.get(0)
     tourLen = 0
 
-    while len(unvisited) > 0:
+    while len(unvisited) > 1:
         #pop a vertex off the graph
         current = unvisited.pop(current['id'])
         #add it to the visisted list
@@ -61,6 +63,11 @@ def NearestNeighbor(unvisited):
             tourLen += nearest[0]
         # the new current node is now the node that was previously the nearest node
         current = nearest[1]
+
+    print(current['id'])
+    visited[current['id']] = current
+    tourLen += distance(current, first)
+    unvisited.pop(current['id'])
     return (visited, tourLen)
 
 def findClosest( current, unvisited ):
