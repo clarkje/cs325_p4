@@ -22,11 +22,9 @@ def distance(a,b):
     # a and b are integer pairs (each representing a point in a 2D, integer grid)
     # Euclidean distance rounded to the nearest integer:
     print("-- distance --")
-    print(a)
-    print(b)
     dx = a['x'] - b['x']
     print(dx)
-    dy = a[1]['y']-b[1]['y']
+    dy = a['y'] - b['y']
     return int(math.sqrt(dx*dx + dy*dy)+0.5) # equivalent to the next line
     #return int(round(math.sqrt(dx*dx + dy*dy)))
 
@@ -82,10 +80,10 @@ def findClosest( current, unvisited ):
     for vertex in unvisited:
         #HACK: This is odd... instead of getting the vertex and tuple as vertex, I just get its index
         #I'm effectively reconstructing it by assigning the whole node in the unvisisted dict
-        v = {}
-        v[vertex] = {'id': vertex, 'x': unvisited[vertex]['x'], 'y': unvisited[vertex]['y'] }
-        c = {}
-        c[current[0]] = {'id': current[0], 'x': current[1]['x'], 'y': current[1]['y']}
+        v = dict()
+        v = {'id': vertex, 'x': unvisited[vertex]['x'], 'y': unvisited[vertex]['y'] }
+        c = dict()
+        c = {'id': current[0], 'x': current[1]['x'], 'y': current[1]['y']}
         dist = distance(c, v)
         if dist < closestDist:
             closestDist = dist
