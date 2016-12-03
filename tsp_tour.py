@@ -52,7 +52,8 @@ def nearestNeighbor(unvisited):
         #add it to the visisted list
         visited[current['id']] = current
         # find the nearest unvisited vertex and its distance
-        nearest = findClosest(current, copy.deepcopy(unvisited))
+        nearest = findClosest(current, unvisited)
+        #nearest = findClosest(current, copy.deepcopy(unvisited))
         # add the distance between the current node and nearest node to total tour length
         if (nearest[0] < sys.maxint):
             tourLen += nearest[0]
@@ -149,13 +150,13 @@ def optimize( tour, tourWeight, timeLimit):
         #    startSwap = 1
         #    endSwap = random.randrange(2, len(tourList) - 1)
 
-        print("startSwap: {0}, endSwap{1}".format(startSwap, endSwap))
+        #print("startSwap: {0}, endSwap{1}".format(startSwap, endSwap))
         newTourList = doSwap( tourList, startSwap, endSwap)
 
-        print("==== new tour list === ")
+        #print("==== new tour list === ")
         #print(newTourList)
         newTourWeight = calculateTourLength(newTourList)
-        print("oldTourWeight: {0} newTourWeight: {1}".format(oldWeight, newTourWeight))
+        #print("oldTourWeight: {0} newTourWeight: {1}".format(oldWeight, newTourWeight))
         if newTourWeight < oldWeight:
             tourList = newTourList
             oldWeight = newTourWeight
@@ -171,20 +172,21 @@ def main():
 
     # A dictionary of cities and their coordinates
     cities = readCities(inputFile)
+    #print(cities)
 
     # Calculate Tour
     nearestNeighbors = nearestNeighbor(cities)
 
-    print("=== nearestNeighbors ===")
-    print(nearestNeighbors[0])
-    print(nearestNeighbors[1])
+    #print("=== nearestNeighbors ===")
+    #print(nearestNeighbors[0])
+    #print(nearestNeighbors[1])
 
     # Optimize Tour
-    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 178)
+    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1])
 
-    print("=== optimized ===")
-    print(optimizedTour[0])
-    print(optimizedTour[1])
+    #print("=== optimized ===")
+    #print(optimizedTour[0])
+    #print(optimizedTour[1])
 
     #writeResults(outputFile, nearestNeighbors[0], nearestNeighbors[1])
     writeResults(outputFile, optimizedTour[0], optimizedTour[1])
@@ -197,13 +199,13 @@ def writeResults(outputFile, cities, totalDistance):
 
     # TODO: Calculate total tour distance
     print(totalDistance, file=outFile)
-    print(totalDistance)
+    #print(totalDistance)
 
     # Print the City IDs of the tour
     for city in cities:
         #print("{0} {1} {2}".format(city, cities[city]["x"], cities[city]["y"]))
         print(city[0], file=outFile)
-        print(city)
+        #print(city)
 
 
 
