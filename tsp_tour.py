@@ -106,9 +106,8 @@ def optimize( tour, tourWeight, timeLimit):
     curTime = time.time()
     endTime = curTime + timeLimit
 
-    #while(time.time() < endTime):
-    while(True):
-        raw_input("Press Enter to Continue")
+    while(time.time() < endTime):
+#        raw_input("Press Enter to Continue")
 
         print("=====Back at top======")
         # find two edges that do not share a vertex
@@ -129,9 +128,6 @@ def optimize( tour, tourWeight, timeLimit):
 
         # find another pair of adjacent indices in tour with distinct vertices
         while(found == False):
-
-            #print("j: {0}, edgeA.u: {1}, edgeA.v: {2}".format(j, edgeA['u'], edgeA['v']))
-            #print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
 
             if (j+1 >= len(tour)):
                 print("In if where j+1 is greater than length")
@@ -155,26 +151,6 @@ def optimize( tour, tourWeight, timeLimit):
 
 
         edgeB = {'j': j, 'k': k}
-        # get the distance of each edge and subtract from the total
-#        print("Values found at tour[edgeA['u']], tour[edgeB['v']]: {0} {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
-#        distA = distance(tourArray[edgeA['u']], tourArray[edgeA['v']])
-#        distB = distance(tourArray[edgeB['j']], tourArray[edgeB['k']])
-
-#        print("before swap")
-#        print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
-#        print("c: {0}, d: {1}".format(tour[edgeB['j']], tour[edgeB['k']]))
-
-#        print("oldWeight: {0}, newWeight{1}".format(oldWeight, newWeight))
-#        print("distA: {0}, distb: {1}".format(distA, distB))
-
-#        newWeight = oldWeight - (distA + distB)
-
-
-        # swapping the values of the indices rearrances the order of the tour
-        # this effectively creates new edges between the adjacent indices
-#        temp = tourArray[edgeB['k']]
-#        tourArray[edgeB['k']] = tourArray[edgeA['v']]
-#        tourArray[edgeA['v']] = temp
         newTourArr = swap(edgeA, edgeB, tourArray)
         newTourArrWeight = calcTour(newTourArr)
         print("Old Tour Length: {0}, New Tour Length: {1}".format(oldWeight, newTourArrWeight))
@@ -182,48 +158,17 @@ def optimize( tour, tourWeight, timeLimit):
             print("Replacing old tour with new found tour, and oldWeight with our new weight")
             tourArray = newTourArr
             oldWeight = newTourArrWeight
-
-
-
-#        print("after swap")
-#        print("a: {0}, b: {1}".format(tourArray[edgeA['u']], tourArray[edgeA['v']]))
-#        print("c: {0}, d: {1}".format(tourArray[edgeB['j']], tourArray[edgeB['k']]))
-
-        # get the distance of our new edges
-
-#        newDistA = distance(tourArray[edgeA['u']], tourArray[edgeA['v']])
-#        newDistB = distance(tourArray[edgeB['j']], tourArray[edgeB['k']])
-
-#        print("newDistA: {0}, newDistB: {1}".format(newDistA, newDistB))
-
-
-        # add these distances to our newWeight
-#        newWeight = newWeight + newDistA + newDistB
-#        print("does newWeight = actual weight: {0}".format(calcTour(tourArray) == newWeight))
-#        print("Removed Edges Total: {0},  New Edge Total: {1}".format(distA+distB, newDistA+newDistB))
-#        print("oldweight: {0}, newweight: {1}".format(oldWeight, newWeight))
-        # if the tour is longer, revert the swap
-#        if (newWeight >= oldWeight):
-#            print("Swapping back")
-#            temp = tourArray[edgeB['k']]
-#            tourArray[edgeB['k']] = tourArray[edgeA['v']]
-#            tourArray[edgeA['v']] = temp
-            #print("a: {0}, b: {1}".format(tourArray[edgeA['u']], tourArray[edgeA['v']]))
-            #print("c: {0}, d: {1}".format(tourArray[edgeB['j']], tourArray[edgeB['k']]))
-#           print("Checking to make sure our weight stayed the same: {0}".format(calcTour(tourArray) == oldWeight))
-
-
-#        else:
-#            oldWeight = newWeight
-#            print("New Tour: {0}".format(tourArray))
-#            print("What we say is the new weight: {0},  Actual: {1}".format(oldWeight, calcTour(tourArray)))
+            print("Length of Tour Array: ", len(tourArray))
 
         found = False
-#TODO load tourArray back into a dictionary
-    return (tour, oldWeight)
+    dict = collections.OrderedDict()
+    for i in range(0, len(tourArray)):
+        key = tourArray[i]
+        dict[key["id"]] = tourArray[i]
+    return (dict, oldWeight)
 
 def swap(a, b, tour):
-    newTour = [];
+    newTour = []
     for i in range(0, a['u']+1):
         newTour.append(tour[i])
 
@@ -262,7 +207,7 @@ def main():
     print(nearestNeighbors[1])
 
     # Optimize Tour
-    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 1)
+    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 15)
 
     print("=== optimized ===")
     print(optimizedTour[0])
