@@ -126,6 +126,9 @@ def optimize( tour, tourWeight, timeLimit):
         tourList.append(tour.popitem())
     tourList.reverse()
 
+    #print("==== tour list ====")
+    #print(tourList)
+
     oldWeight = tourWeight
     newWeight = 0
     found = False
@@ -138,17 +141,21 @@ def optimize( tour, tourWeight, timeLimit):
 
         # We exclude the first node because it's our origin and terminus
         startSwap = random.randrange(1, len(tourList) - 1)
-        #endSwap = random.randrange(startSwap, len(tourList) - 1)
-        if(startSwap < len(tourList) - 1):
-            endSwap = startSwap + 1
-        else:
-            startSwap = 1
-            endSwap = random.randrange(2, len(tourList) - 1)
+        endSwap = random.randrange(startSwap, len(tourList))
 
+        #if(startSwap < len(tourList) - 2):
+        #    endSwap = startSwap + 2
+        #else:
+        #    startSwap = 1
+        #    endSwap = random.randrange(2, len(tourList) - 1)
+
+        print("startSwap: {0}, endSwap{1}".format(startSwap, endSwap))
         newTourList = doSwap( tourList, startSwap, endSwap)
 
+        print("==== new tour list === ")
+        #print(newTourList)
         newTourWeight = calculateTourLength(newTourList)
-
+        print("oldTourWeight: {0} newTourWeight: {1}".format(oldWeight, newTourWeight))
         if newTourWeight < oldWeight:
             tourList = newTourList
             oldWeight = newTourWeight
