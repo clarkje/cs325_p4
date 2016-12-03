@@ -88,7 +88,15 @@ def findClosest( current, unvisited ):
 #
 
 def optimize( tour, tourWeight, timeLimit):
+    tourArray = []
+    i = 0
+    for k in tour:
+        tourArray.append(tour.get(k))
+        i += 1
 
+    for j in tourArray:
+        print(j)
+    print(calcTour(tourArray) == tourWeight)
     print("==== optimize ====")
 
     oldWeight = tourWeight
@@ -98,20 +106,23 @@ def optimize( tour, tourWeight, timeLimit):
     curTime = time.time()
     endTime = curTime + timeLimit
 
-    while(time.time() < endTime):
+    #while(time.time() < endTime):
+    while(True):
+        raw_input("Press Enter to Continue")
 
-        print("Back at top")
-
+        print("=====Back at top======")
         # find two edges that do not share a vertex
         # choose a random index u <= len(tour)
+        print("obtaining random u value")
         u = random.randrange(0, len(tour) - 1)
         if u + 1 >= len(tour):
-            v = tour[0]
+            v = 0
         else:
             v = u + 1
 
         edgeA = {'u': u,'v': v}
-        j = random.randrange(0, len(tour) - 1)
+        print("obtaining random j value")
+        j = random.randint(0, len(tour) - 1)
 
         #print("u: {0}, v: {1}".format(u, v))
 
@@ -123,27 +134,31 @@ def optimize( tour, tourWeight, timeLimit):
             #print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
 
             if (j+1 >= len(tour)):
+                print("In if where j+1 is greater than length")
                 if (j == edgeA['u'] or j == edgeA['v'] or 0 == edgeA['u'] or 0 == edgeA['v']):
-                    j = random.randrange(0, len(tour) - 1)
+                    print("rerolling j")
+                    j = random.randint(0, len(tour) - 1)
                 else:
                     found = True
             else:
+                print("in if where j+1 is less than length")
                 if (j == edgeA['u'] or j == edgeA['v'] or j+1 == edgeA['u'] or j+1 == edgeA['v']):
-                    j = random.randrange(0, len(tour) - 1)
+                    print("rerolling J")
+                    j = random.randint(0, len(tour) - 1)
                 else:
                     found = True
 
             if (j+1 >= len(tour)):
-                k = tour[0]
+                k = 0
             else:
                 k = j+1
 
 
         edgeB = {'j': j, 'k': k}
-
         # get the distance of each edge and subtract from the total
-        distA = distance(tour[edgeA['u']], tour[edgeA['v']])
-        distB = distance(tour[edgeB['j']], tour[edgeB['k']])
+        print("Values found at tour[edgeA['u']], tour[edgeB['v']]: {0} {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
+        distA = distance(tourArray[edgeA['u']], tourArray[edgeA['v']])
+        distB = distance(tourArray[edgeB['j']], tourArray[edgeB['k']])
 
         print("before swap")
         print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
@@ -157,43 +172,57 @@ def optimize( tour, tourWeight, timeLimit):
 
         # swapping the values of the indices rearrances the order of the tour
         # this effectively creates new edges between the adjacent indices
-        temp = tour[edgeB['k']]
-        tour[edgeB['k']] = tour[edgeA['v']]
-        tour[edgeA['v']] = temp
+        temp = tourArray[edgeB['k']]
+        tourArray[edgeB['k']] = tourArray[edgeA['v']]
+        tourArray[edgeA['v']] = temp
 
         print("after swap")
-        print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
-        print("c: {0}, d: {1}".format(tour[edgeB['j']], tour[edgeB['k']]))
+        print("a: {0}, b: {1}".format(tourArray[edgeA['u']], tourArray[edgeA['v']]))
+        print("c: {0}, d: {1}".format(tourArray[edgeB['j']], tourArray[edgeB['k']]))
 
         # get the distance of our new edges
 
-        newDistA = distance(tour[edgeA['u']], tour[edgeA['v']])
-        newDistB = distance(tour[edgeB['j']], tour[edgeB['k']])
+        newDistA = distance(tourArray[edgeA['u']], tourArray[edgeA['v']])
+        newDistB = distance(tourArray[edgeB['j']], tourArray[edgeB['k']])
 
         print("newDistA: {0}, newDistB: {1}".format(newDistA, newDistB))
 
 
         # add these distances to our newWeight
         newWeight = newWeight + newDistA + newDistB
-
+        print("does newWeight = actual weight: {0}".format(calcTour(tourArray) == newWeight))
+        print("Removed Edges Total: {0},  New Edge Total: {1}".format(distA+distB, newDistA+newDistB))
         print("oldweight: {0}, newweight: {1}".format(oldWeight, newWeight))
-
         # if the tour is longer, revert the swap
-        if (newWeight > oldWeight):
+        if (newWeight >= oldWeight):
             print("Swapping back")
-            temp = tour[edgeB['k']]
-            tour[edgeB['k']] = tour[edgeA['v']]
-            tour[edgeA['v']] = temp
-            print("a: {0}, b: {1}".format(tour[edgeA['u']], tour[edgeA['v']]))
-            print("c: {0}, d: {1}".format(tour[edgeB['j']], tour[edgeB['k']]))
+            temp = tourArray[edgeB['k']]
+            tourArray[edgeB['k']] = tourArray[edgeA['v']]
+            tourArray[edgeA['v']] = temp
+            #print("a: {0}, b: {1}".format(tourArray[edgeA['u']], tourArray[edgeA['v']]))
+            #print("c: {0}, d: {1}".format(tourArray[edgeB['j']], tourArray[edgeB['k']]))
+            print("Checking to make sure our weight stayed the same: {0}".format(calcTour(tourArray) == oldWeight))
+
 
         else:
             oldWeight = newWeight
+            print("New Tour: {0}".format(tourArray))
+            print("What we say is the new weight: {0},  Actual: {1}".format(oldWeight, calcTour(tourArray)))
 
         found = False
-
+#TODO load tourArray back into a dictionary
     return (tour, oldWeight)
 
+def calcTour(arr):
+    total = 0
+    i = 0
+    while i < len(arr)-1:
+        pointA = arr[i]
+        pointB = arr[i+1]
+        total += distance(pointA, pointB)
+        i += 1
+    total += distance(arr[len(arr)-1],arr[0])
+    return total
 
 def main():
 
