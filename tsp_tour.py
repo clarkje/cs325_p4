@@ -182,7 +182,7 @@ def main():
     #print(nearestNeighbors[1])
 
     # Optimize Tour
-    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1])
+    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 360)
 
     #print("=== optimized ===")
     #print(optimizedTour[0])
