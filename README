@@ -1,0 +1,19 @@
+run the following on the commandline:
+
+   python tsp_tour.py [nameofinputfile.txt]
+
+Where [nameofinputfile.txt] is replaced by the name of an input (txt) file.
+For example:
+
+   python tsp_tour.py test-input-1.txt
+
+Each time you run this command, the algorithm will run for exactly 179 seconds
+in an attempt to reach the best solution possible.
+
+After the 179 seconds are up, the program will write to an outputfile in the form of
+    [nameofinputfile.txt].tour
+
+The above example would return:
+    test-input-1.txt.tour
+
+
