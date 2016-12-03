@@ -17,3 +17,5 @@ The above example would return:
     test-input-1.txt.tour
 
 
+NOTE: Please do not run 'watch.py'. Our tour will not complete. For this reason,
+we've included our own timing method that kills the algorithm when time is up.
