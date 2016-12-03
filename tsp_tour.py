@@ -167,6 +167,7 @@ def optimize( tour, tourWeight, timeLimit):
         dict[key["id"]] = tourArray[i]
     return (dict, oldWeight)
 
+#borrowed from http://www.technical-recipes.com/2012/applying-c-implementations-of-2-opt-to-travelling-salesman-problems/
 def swap(a, b, tour):
     newTour = []
     for i in range(0, a['u']+1):
@@ -207,7 +208,7 @@ def main():
     print(nearestNeighbors[1])
 
     # Optimize Tour
-    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 15)
+    optimizedTour = optimize( nearestNeighbors[0], nearestNeighbors[1], 179)
 
     print("=== optimized ===")
     print(optimizedTour[0])
